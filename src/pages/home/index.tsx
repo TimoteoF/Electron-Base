@@ -1,9 +1,29 @@
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { FaMicrochip } from 'react-icons/fa6';
 import { IoReload } from 'react-icons/io5';
 import { VscGlobe, VscServer, VscServerProcess, VscVersions, VscVm, VscWatch } from 'react-icons/vsc';
 import { trpc } from '@web/lib/trpcClient';
+
+function formatBytes(bytes: number, decimals = 2): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
+
+function formatUptime(seconds: number): string {
+    if (seconds < 60) return `${Math.floor(seconds)}s`;
+    const d = Math.floor(seconds / (3600 * 24));
+    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    let result = '';
+    if (d > 0) result += `${d}d `;
+    if (h > 0) result += `${h}h `;
+    if (m > 0) result += `${m}m`;
+    return result.trim();
+}
 
 export default function App() {
     const { data, refetch } = useQuery({
@@ -11,35 +31,6 @@ export default function App() {
         queryFn: () => trpc.os.getInfo.query(),
         staleTime: Infinity,
     });
-
-    const formatBytes = useMemo(
-        () =>
-            (bytes: number, decimals = 2) => {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const dm = decimals < 0 ? 0 : decimals;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-            },
-        []
-    );
-
-    const formatUptime = useMemo(
-        () =>
-            (seconds: number): string => {
-                if (seconds < 60) return `${Math.floor(seconds)}s`;
-                const d = Math.floor(seconds / (3600 * 24));
-                const h = Math.floor((seconds % (3600 * 24)) / 3600);
-                const m = Math.floor((seconds % 3600) / 60);
-                let result = '';
-                if (d > 0) result += `${d}d `;
-                if (h > 0) result += `${h}h `;
-                if (m > 0) result += `${m}m`;
-                return result.trim();
-            },
-        []
-    );
 
     return (
         <main className='min-h-screen w-full bg-slate-900 flex flex-col items-center justify-center p-6 text-slate-100'>

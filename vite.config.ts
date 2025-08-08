@@ -9,7 +9,11 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig(() => ({
     plugins: [
         tanstackRouter({ target: 'react' }),
-        react(),
+        react({
+            babel: {
+                plugins: [['babel-plugin-react-compiler', { target: '19' }]],
+            },
+        }),
         tailwindcss(),
         electron({
             main: {

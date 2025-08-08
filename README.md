@@ -22,21 +22,37 @@ pnpm build   # build renderer and package Windows installer
 
 ## What’s inside
 
--   Renderer: React + Vite (HMR)
--   Main: Electron `BrowserWindow` with secure defaults
--   Preload: minimal bridge exposing `window.trpc.invoke({ path, input })`
--   Backend: tRPC over IPC
-    -   `electron/backend/functions/*`: Node/secret logic
-    -   `electron/backend/routers/*`: tRPC procedures (thin, call functions)
-    -   `electron/backend/router.ts`: compose domain routers → `appRouter`
-    -   `electron/backend/ipcTrpc.ts`: single IPC handler (dynamic dispatch)
-    -   `electron/backend/ctx.ts`: per‑call context (kept empty; extend when needed)
-    -   Auto‑update compatible: works with `electron-updater` (see `auto-update.md`)
-    -   React Query: data caching/fetching in the renderer
-    -   TailwindCSS v4: utility-first styling via classes
-    -   TanStack Router: file-based routing with Vite plugin
-    -   Import aliases: `@web/*` → `src/*`, `@app/*` → `electron/*`
-    -   React Icons: icon library preinstalled
+> [!TIP]
+> Skim this to see what you get out of the box.
+
+-   Renderer.
+    -   React + Vite with instant HMR.
+    -   React 19 with the React Compiler enabled.
+-   Main + Preload.
+    -   Hardened `BrowserWindow` defaults.
+    -   Tiny preload that only exposes `window.trpc.invoke({ path, input })`.
+-   Backend (tRPC over IPC).
+    -   End‑to‑end types with zero HTTP server.
+    -   One IPC handler with dynamic dispatch.
+    -   A per‑call context you can extend when needed.
+-   DX & UI.
+    -   React Query for fetching and caching.
+    -   TailwindCSS v4 for utility‑first styling.
+    -   TanStack Router for file‑based routing.
+    -   Import aliases `@web/*` and `@app/*` keep imports clean.
+    -   React Icons included for convenient icons.
+-   Packaging & updates.
+    -   `electron-builder.json5` is ready, and `pnpm build` creates a Windows installer.
+    -   Auto‑update is supported with `electron-updater` (see `auto-update.md`).
+
+> [!NOTE]
+> Where things live.
+
+-   `electron/backend/functions/*` holds Node‑only logic.
+-   `electron/backend/routers/*` exposes thin tRPC procedures.
+-   `electron/backend/router.ts` composes domain routers into `appRouter`.
+-   `electron/backend/ipcTrpc.ts` handles all `ipcMain.handle('trpc:invoke')` calls.
+-   `electron/backend/ctx.ts` defines the request context.
 
 ---
 
@@ -101,6 +117,14 @@ import { FaMicrochip } from 'react-icons/fa6';
 ```
 
 No special setup required.
+
+---
+
+## React Compiler
+
+This template enables the React Compiler through the React plugin's Babel configuration in `vite.config.ts`.
+It targets React 19 semantics and works out of the box with React 19.
+If you run into issues with third‑party libraries, you can temporarily disable the compiler by removing the Babel plugin entry.
 
 > [!IMPORTANT]
 > Security: `contextIsolation: true`, `nodeIntegration: false`. Only a minimal, typed surface is exposed via preload.
