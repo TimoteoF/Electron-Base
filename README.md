@@ -32,7 +32,8 @@ pnpm build   # build renderer and package Windows installer
     -   `electron/backend/ipcTrpc.ts`: single IPC handler (dynamic dispatch)
     -   `electron/backend/ctx.ts`: per‑call context (kept empty; extend when needed)
     -   React Query: data caching/fetching in the renderer
-    -   TailwindCSS: utility-first styling via classes in your React components
+    -   TailwindCSS v4: utility-first styling via classes
+    -   TanStack Router: file-based routing with Vite plugin
     -   Import aliases: `@web/*` → `src/*`, `@app/*` → `electron/*`
     -   React Icons: icon library preinstalled
 
@@ -50,7 +51,8 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
-        <App />
+        {/* Your routed app is rendered via RouterProvider */}
+        {/* Components can use useQuery + tRPC calls */}
     </QueryClientProvider>
 );
 ```

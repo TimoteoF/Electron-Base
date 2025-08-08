@@ -3,9 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { FaMicrochip } from 'react-icons/fa6';
 import { IoReload } from 'react-icons/io5';
 import { VscGlobe, VscServer, VscServerProcess, VscVersions, VscVm, VscWatch } from 'react-icons/vsc';
-import { trpc } from './lib/trpcClient';
+import { trpc } from '@web/lib/trpcClient';
 
-function App() {
+export default function App() {
     const { data, refetch } = useQuery({
         queryKey: ['osInfo'],
         queryFn: () => trpc.os.getInfo.query(),
@@ -119,5 +119,3 @@ function App() {
         </main>
     );
 }
-
-export default App;
