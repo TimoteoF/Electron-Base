@@ -2,7 +2,7 @@
 {
     $schema: 'https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json',
     appId: 'com.company.electronbase',
-    productName: 'Electron Base',
+    productName: 'Electron Base Template',
     files: ['dist', 'dist-electron'],
     directories: {
         output: 'release/${version}',

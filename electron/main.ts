@@ -10,11 +10,14 @@ let mainWindow: BrowserWindow | null = null;
 function createMainWindow(): void {
     const isDev = Boolean(process.env.VITE_DEV_SERVER_URL);
     mainWindow = new BrowserWindow({
-        width: 1000,
-        height: 700,
+        title: 'Main Window',
+        width: 1280,
+        height: 720,
+        minWidth: 800,
+        minHeight: 600,
         show: false,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.mjs'),
+            preload: path.join(__dirname, 'index.mjs'),
             contextIsolation: true,
             nodeIntegration: false,
             devTools: isDev,
@@ -40,6 +43,8 @@ function createMainWindow(): void {
 }
 
 app.whenReady().then(() => {
+    // Wire tRPC IPC handler lazily after app ready
+    import('./backend/ipcTrpc').then(({ registerTrpcHandler }) => registerTrpcHandler());
     createMainWindow();
 
     app.on('activate', () => {
