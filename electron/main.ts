@@ -46,6 +46,7 @@ function createMainWindow(): void {
 app.whenReady().then(() => {
     // Remove default application menu (File/Edit/View...)
     Menu.setApplicationMenu(null);
+    
     // Wire tRPC IPC handler lazily after app ready
     import('./backend/ipcTrpc').then(({ registerTrpcHandler }) => registerTrpcHandler());
     createMainWindow();

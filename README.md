@@ -31,6 +31,7 @@ pnpm build   # build renderer and package Windows installer
     -   `electron/backend/router.ts`: compose domain routers → `appRouter`
     -   `electron/backend/ipcTrpc.ts`: single IPC handler (dynamic dispatch)
     -   `electron/backend/ctx.ts`: per‑call context (kept empty; extend when needed)
+    -   Auto‑update compatible: works with `electron-updater` (see `auto-update.md`)
     -   React Query: data caching/fetching in the renderer
     -   TailwindCSS v4: utility-first styling via classes
     -   TanStack Router: file-based routing with Vite plugin
@@ -84,7 +85,8 @@ This template uses TailwindCSS v4 for styling.
 -   `@web/*` → `src/*`
 -   `@app/*` → `electron/*`
 
-Configured in `vite.config.ts` (resolve.alias) and TypeScript paths. Use them to avoid long relative imports.
+Configured in `vite.config.ts` (resolve.alias) and TypeScript paths.
+Use them to avoid long relative imports.
 
 ---
 
@@ -211,6 +213,19 @@ pnpm build
 
 > [!NOTE]
 > Default Electron icon is used if you don’t provide icons. To customize, drop `icon.ico`/`icon.icns`/`icon.png` at project root per config.
+
+---
+
+## Distribution Artifacts (what to ship)
+
+After a build, artifacts are written to `release/<version>/`.
+
+-   **Windows**: ship the NSIS installer `.exe` (named like `Electron Base-Windows-<version>-Setup.exe`).
+-   **macOS**: ship the `.dmg` (if configured in `mac.target`).
+-   **Linux**: ship the `.AppImage` (and/or `.deb` if configured).
+
+> [!IMPORTANT]
+> Do NOT distribute any `*-unpacked/` folders, nor `dist/` or `dist-electron/`. Those are for local testing only.
 
 ---
 
