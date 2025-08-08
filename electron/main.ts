@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,11 +17,12 @@ function createMainWindow(): void {
         minHeight: 600,
         show: false,
         webPreferences: {
-            preload: path.join(__dirname, 'index.mjs'),
+            preload: path.join(__dirname, 'preload.mjs'),
             contextIsolation: true,
             nodeIntegration: false,
             devTools: isDev,
         },
+        autoHideMenuBar: true,
     });
 
     const devServerUrl = process.env.VITE_DEV_SERVER_URL;
@@ -43,6 +44,8 @@ function createMainWindow(): void {
 }
 
 app.whenReady().then(() => {
+    // Remove default application menu (File/Edit/View...)
+    Menu.setApplicationMenu(null);
     // Wire tRPC IPC handler lazily after app ready
     import('./backend/ipcTrpc').then(({ registerTrpcHandler }) => registerTrpcHandler());
     createMainWindow();

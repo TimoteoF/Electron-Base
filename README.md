@@ -31,6 +31,72 @@ pnpm build   # build renderer and package Windows installer
     -   `electron/backend/router.ts`: compose domain routers → `appRouter`
     -   `electron/backend/ipcTrpc.ts`: single IPC handler (dynamic dispatch)
     -   `electron/backend/ctx.ts`: per‑call context (kept empty; extend when needed)
+    -   React Query: data caching/fetching in the renderer
+    -   TailwindCSS: utility-first styling via classes in your React components
+    -   Import aliases: `@web/*` → `src/*`, `@app/*` → `electron/*`
+    -   React Icons: icon library preinstalled
+
+---
+
+## React Query (renderer)
+
+This template uses React Query to call tRPC procedures and render from cached data.
+
+Provider (already set up in `src/main.tsx`):
+
+```ts
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+const queryClient = new QueryClient();
+
+createRoot(document.getElementById('root')!).render(
+    <QueryClientProvider client={queryClient}>
+        <App />
+    </QueryClientProvider>
+);
+```
+
+Usage example (in a component):
+
+```ts
+import { useQuery } from '@tanstack/react-query';
+import { trpc } from '@web/lib/trpcClient';
+
+const { data, refetch } = useQuery({
+    queryKey: ['osInfo'],
+    queryFn: () => trpc.os.getInfo.query(),
+    // That basically mirrors trpc.router.attribute.query()
+    staleTime: Infinity,
+});
+```
+
+---
+
+## TailwindCSS
+
+This template uses TailwindCSS v4 for styling.
+
+---
+
+## Import Aliases
+
+-   `@web/*` → `src/*`
+-   `@app/*` → `electron/*`
+
+Configured in `vite.config.ts` (resolve.alias) and TypeScript paths. Use them to avoid long relative imports.
+
+---
+
+## React Icons
+
+React Icons is included for convenient icon usage across the app.
+Import any pack/icon you need:
+
+```ts
+import { VscServer } from 'react-icons/vsc';
+import { FaMicrochip } from 'react-icons/fa6';
+```
+
+No special setup required.
 
 > [!IMPORTANT]
 > Security: `contextIsolation: true`, `nodeIntegration: false`. Only a minimal, typed surface is exposed via preload.
@@ -120,7 +186,7 @@ const profile = await trpc.user.profile.query();
 
 ## Files you typically don’t touch when adding features
 
--   `electron/preload/index.ts` — the bridge (fixed)
+-   `electron/preload.ts` — the bridge (fixed)
 -   `electron/backend/ipcTrpc.ts` — generic dynamic dispatch
 -   `electron/main.ts` — window/bootstrap
 
@@ -158,7 +224,7 @@ pnpm build
 ## Troubleshooting
 
 -   Preload path mismatch (white screen / undefined `window.trpc`)
-    -   Ensure `electron/main.ts` uses `preload: path.join(__dirname, 'index.mjs')`.
+    -   Ensure `electron/main.ts` uses `preload: path.join(__dirname, 'preload.mjs')` and `vite.config.ts` preload entry is `electron/preload.ts`.
 -   Electron postinstall blocked by pnpm
     -   Run `pnpm approve-builds electron`.
 -   Installer icon not applied
