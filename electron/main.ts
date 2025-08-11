@@ -1,14 +1,17 @@
 import { app, BrowserWindow, Menu } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { registerTrpcHandler } from '@app/backend/ipcTrpc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let mainWindow: BrowserWindow | null = null;
 
+// Create the main window (Will be called by the app.whenReady() event)
 function createMainWindow(): void {
-    const isDev = Boolean(process.env.VITE_DEV_SERVER_URL);
+    const devServerUrl = process.env.VITE_DEV_SERVER_URL;
+
     mainWindow = new BrowserWindow({
         title: 'Main Window',
         width: 1280,
@@ -20,12 +23,13 @@ function createMainWindow(): void {
             preload: path.join(__dirname, 'preload.mjs'),
             contextIsolation: true,
             nodeIntegration: false,
-            devTools: isDev,
+            devTools: Boolean(devServerUrl),
         },
         autoHideMenuBar: true,
     });
 
-    const devServerUrl = process.env.VITE_DEV_SERVER_URL;
+    // Ensure tRPC IPC handler is registered before the renderer loads
+    registerTrpcHandler(mainWindow);
 
     if (devServerUrl) {
         void mainWindow.loadURL(devServerUrl);
@@ -43,12 +47,11 @@ function createMainWindow(): void {
     });
 }
 
+// This is the entry point for the main process
 app.whenReady().then(() => {
     // Remove default application menu (File/Edit/View...)
     Menu.setApplicationMenu(null);
-    
-    // Wire tRPC IPC handler lazily after app ready
-    import('./backend/ipcTrpc').then(({ registerTrpcHandler }) => registerTrpcHandler());
+
     createMainWindow();
 
     app.on('activate', () => {

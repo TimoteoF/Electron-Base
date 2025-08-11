@@ -1,14 +1,7 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { exposeElectronTRPC } from 'electron-trpc-experimental/preload';
 
-type TrpcInvokeInput = {
-    path: string;
-    input: unknown;
-};
-
-contextBridge.exposeInMainWorld('trpc', {
-    invoke: async <TOutput>(op: TrpcInvokeInput): Promise<TOutput> => {
-        return ipcRenderer.invoke('trpc:invoke', op);
-    },
+process.once('loaded', () => {
+    exposeElectronTRPC();
 });
 
 export {};
