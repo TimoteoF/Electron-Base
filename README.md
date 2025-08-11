@@ -9,6 +9,7 @@
 ![tRPC](https://img.shields.io/badge/tRPC-11.x-398CCB?logo=trpc&logoColor=white)
 ![TanStack Query](https://img.shields.io/badge/TanStack%20Query-5.x-FF4154?logo=react-query&logoColor=white)
 ![TanStack Router](https://img.shields.io/badge/TanStack%20Router-1.x-FF4154?logo=react-router&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-9.x-4B32C3?logo=eslint&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?logo=tailwindcss&logoColor=white)
 
 ---
@@ -270,6 +271,28 @@ Use them to avoid long relative imports. All code snippets in this README use th
 ```ts
 import { trpc } from '@web/lib/trpcClient';
 import { appRouter } from '@app/backend/router';
+```
+
+---
+
+## ESLint
+
+This project uses ESLint’s modern flat config with type-aware, strict TypeScript rules and React best practices.
+
+-   Config file: `eslint.config.js` (ESM flat config)
+-   Highlights
+    -   TypeScript: `@typescript-eslint` recommendedTypeChecked + strictTypeChecked
+    -   React: `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`
+    -   Accessibility: `eslint-plugin-jsx-a11y`
+    -   Imports: `eslint-plugin-import` with ordering and newline rules
+    -   Code quality: `eslint-plugin-unicorn`, `eslint-plugin-sonarjs`
+    -   Electron: `eslint-plugin-electron` for security best practices
+    -   Security: `eslint-plugin-security`, `eslint-plugin-no-secrets`
+
+Run lint:
+
+```bash
+pnpm lint
 ```
 
 ---
