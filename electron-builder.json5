@@ -16,7 +16,6 @@
     win: {
         target: [{ target: 'nsis', arch: ['x64'] }],
         artifactName: '${productName}-Windows-${version}-Setup.${ext}',
-        signAndEditExecutable: false,
     },
     nsis: {
         oneClick: false,

@@ -1,7 +1,8 @@
-import { StrictMode, lazy, Suspense } from 'react';
-import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createHashHistory, createRouter, RouterProvider } from '@tanstack/react-router';
+import { StrictMode, lazy, Suspense } from 'react';
+import { createRoot } from 'react-dom/client';
+
 import { routeTree } from './routeTree.gen';
 import '@web/styles/index.css';
 
@@ -11,7 +12,10 @@ const DevTools = import.meta.env.DEV ? lazy(() => import('@web/components/utils/
 const queryClient = new QueryClient();
 const router = createRouter({ routeTree, history: createHashHistory() });
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Root element not found');
+
+createRoot(rootElement).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
             <RouterProvider router={router} />

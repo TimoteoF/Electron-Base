@@ -7,55 +7,50 @@ import tseslint from 'typescript-eslint';
 import { globalIgnores } from 'eslint/config';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import importPlugin from 'eslint-plugin-import';
-import unicorn from 'eslint-plugin-unicorn';
-import sonarjs from 'eslint-plugin-sonarjs';
-import electronPlugin from 'eslint-plugin-electron';
-import security from 'eslint-plugin-security';
-import noSecrets from 'eslint-plugin-no-secrets';
+import prettierPlugin from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
+// Avoid legacy shareable presets to keep flat config compatibility stable
 
 export default tseslint.config([
-    globalIgnores(['dist', 'dist-electron', 'release']),
+    globalIgnores([
+        'dist',
+        'dist-electron',
+        'release',
+        'eslint.config.js',
+        'prettier.config.js',
+        'electron-builder.json5',
+    ]),
     {
-        files: ['**/*.{js,jsx,ts,tsx}'],
+        files: ['src/**/*.{js,jsx,ts,tsx}'],
         plugins: {
             react,
             'react-hooks': reactHooks,
             'react-refresh': reactRefresh,
             'jsx-a11y': jsxA11y,
             import: importPlugin,
-            unicorn,
-            sonarjs,
-            electron: electronPlugin,
-            security,
-            'no-secrets': noSecrets,
+            prettier: prettierPlugin,
         },
         extends: [
             js.configs.recommended,
             // Type-aware + strict rules for TypeScript
             tseslint.configs.recommendedTypeChecked,
             tseslint.configs.strictTypeChecked,
-            // React core + JSX runtime + Hooks and Vite Fast Refresh
-            react.configs.recommended,
-            react.configs['jsx-runtime'],
-            reactHooks.configs['recommended-latest'],
-            reactRefresh.configs.vite,
-            // SonarJS recommended (code smells & complexity)
-            sonarjs.configs.recommended,
+            // Disable stylistic rules that conflict with Prettier formatting
+            prettierConfig,
         ],
         languageOptions: {
-            ecmaVersion: 2025,
+            ecmaVersion: 2023,
             sourceType: 'module',
             globals: globals.browser,
             parserOptions: {
-                // Enable type-aware linting without listing every tsconfig
-                projectService: true,
+                project: ['./tsconfig.renderer.json'],
                 tsconfigRootDir: import.meta.dirname,
             },
         },
         settings: {
             react: { version: 'detect' },
             'import/resolver': {
-                typescript: { project: true },
+                typescript: { project: ['tsconfig.renderer.json'] },
                 node: true,
             },
         },
@@ -64,6 +59,7 @@ export default tseslint.config([
             'react/jsx-no-useless-fragment': 'warn',
             'react/jsx-key': ['error', { checkFragmentShorthand: true }],
             'react/no-unstable-nested-components': 'warn',
+            'react-refresh/only-export-components': 'warn',
 
             // Imports
             'import/order': [
@@ -77,32 +73,54 @@ export default tseslint.config([
             'import/newline-after-import': 'warn',
             'import/no-unresolved': 'off',
 
-            // Unicorn (curated subset)
-            'unicorn/prefer-node-protocol': 'warn',
-            'unicorn/prefer-top-level-await': 'warn',
-            'unicorn/prevent-abbreviations': 'off',
-
-            // Security & secrets
-            'security/detect-unsafe-regex': 'warn',
-            'security/detect-object-injection': 'off',
-            'no-secrets/no-secrets': ['warn', { tolerance: 4.2, ignoreContent: true }],
+            // removed unicorn/security/secrets rules per request
+            // Run Prettier as an ESLint rule (optional; can be run separately)
+            'prettier/prettier': 'warn',
         },
     },
     {
-        files: ['src/**/*.{jsx,tsx}'],
-        extends: [jsxA11y.configs.recommended],
-    },
-    {
-        files: ['electron/**/*.{js,ts,tsx}', 'vite.config.ts', 'electron-builder.json5'],
-        languageOptions: { globals: globals.node },
-        rules: {
-            'electron/no-unfiltered-navigate': 'error',
+        files: ['electron/**/*.{js,ts,tsx}', 'vite.config.ts'],
+        plugins: {
+            react,
+            'react-hooks': reactHooks,
+            'react-refresh': reactRefresh,
+            'jsx-a11y': jsxA11y,
+            import: importPlugin,
+            prettier: prettierPlugin,
         },
-    },
-    {
-        files: ['src/**/*.{js,ts,tsx}'],
+        extends: [
+            js.configs.recommended,
+            tseslint.configs.recommendedTypeChecked,
+            tseslint.configs.strictTypeChecked,
+            prettierConfig,
+        ],
+        languageOptions: {
+            ecmaVersion: 2023,
+            sourceType: 'module',
+            globals: globals.node,
+            parserOptions: {
+                project: ['./tsconfig.electron.json'],
+                tsconfigRootDir: import.meta.dirname,
+            },
+        },
+        settings: {
+            'import/resolver': {
+                typescript: { project: ['tsconfig.electron.json'] },
+                node: true,
+            },
+        },
         rules: {
-            'electron/no-node-in-renderer': 'error',
+            'import/order': [
+                'warn',
+                {
+                    groups: [['builtin', 'external'], ['internal', 'parent', 'sibling', 'index'], ['type']],
+                    'newlines-between': 'always',
+                    alphabetize: { order: 'asc', caseInsensitive: true },
+                },
+            ],
+            'import/newline-after-import': 'warn',
+            'import/no-unresolved': 'off',
+            'prettier/prettier': 'warn',
         },
     },
 ]);

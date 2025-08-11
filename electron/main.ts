@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import { registerTrpcHandler } from '@app/backend/ipcTrpc';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,7 +49,7 @@ function createMainWindow(): void {
 }
 
 // This is the entry point for the main process
-app.whenReady().then(() => {
+void app.whenReady().then(() => {
     // Remove default application menu (File/Edit/View...)
     Menu.setApplicationMenu(null);
 
