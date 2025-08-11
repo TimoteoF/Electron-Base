@@ -1,9 +1,10 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import type { Router } from '@tanstack/react-router';
+
+import type { AnyRouter } from '@tanstack/react-router';
 
 export interface DevToolsProps {
-    router: Router<any>;
+    router: AnyRouter;
 }
 
 export default function DevTools({ router }: DevToolsProps) {

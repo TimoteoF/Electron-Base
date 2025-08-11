@@ -11,7 +11,7 @@ export type OsStats = {
     uptime: number;
 };
 
-export async function getOsStats(): Promise<OsStats> {
+export function getOsStats(): OsStats {
     return {
         platform: os.platform(),
         arch: os.arch(),

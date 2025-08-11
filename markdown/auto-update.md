@@ -6,17 +6,17 @@ Add it when you’re ready.
 
 ## Providers at a glance
 
--   GitHub: simplest for internal apps.
-    Private repos require client auth to download updates.
--   Generic (HTTP/HTTPS): host files on your own server/CDN (Nginx, S3/CloudFront).
-    Best for broad distribution without client auth.
--   S3: similar to Generic with first-class support.
+- GitHub: simplest for internal apps.
+  Private repos require client auth to download updates.
+- Generic (HTTP/HTTPS): host files on your own server/CDN (Nginx, S3/CloudFront).
+  Best for broad distribution without client auth.
+- S3: similar to Generic with first-class support.
 
 Important files per platform (must live together under your publish URL):
 
--   Windows: latest.yml + YourApp-Setup.exe
--   macOS: latest-mac.yml + YourApp-mac.zip (DMG is for install; ZIP is used for auto-update)
--   Linux: latest-linux.yml + YourApp.AppImage
+- Windows: latest.yml + YourApp-Setup.exe
+- macOS: latest-mac.yml + YourApp-mac.zip (DMG is for install; ZIP is used for auto-update)
+- Linux: latest-linux.yml + YourApp.AppImage
 
 ## GitHub provider (private repo friendly)
 
@@ -31,8 +31,8 @@ Important files per platform (must live together under your publish URL):
 
 2. Build and publish
 
--   CI (recommended): inject GH_TOKEN/GITHUB_TOKEN from secrets.
--   Local (one-off):
+- CI (recommended): inject GH_TOKEN/GITHUB_TOKEN from secrets.
+- Local (one-off):
 
 ```powershell
 $env:GH_TOKEN = "<your_token_with_repo_scope>"
@@ -86,9 +86,9 @@ app.whenReady().then(() => {
 
 Notes
 
--   Never hardcode tokens.
-    Use CI secrets for publishing and environment variables for controlled client environments.
--   For external distribution, prefer Generic/S3 instead of private GitHub to avoid client auth.
+- Never hardcode tokens.
+  Use CI secrets for publishing and environment variables for controlled client environments.
+- For external distribution, prefer Generic/S3 instead of private GitHub to avoid client auth.
 
 ## Generic provider (host on your server)
 
@@ -109,8 +109,8 @@ pnpm exec electron-builder --win --publish never
 
 Upload to your server (same directory):
 
--   release/<version>/YourApp-Windows-<version>-Setup.exe
--   release/<version>/latest.yml
+- release/<version>/YourApp-Windows-<version>-Setup.exe
+- release/<version>/latest.yml
 
 Example upload:
 
@@ -170,15 +170,15 @@ app.whenReady().then(() => {
 
 ## Platform notes
 
--   Windows/macOS code signing improves trust and enables smoother updates; macOS often requires notarization.
--   Use HTTPS for Generic hosting; avoid auth for public distribution. If auth is required, prefer short‑lived tokens or signed URLs.
--   macOS auto-update uses the generated ZIP, not the DMG.
--   You can publish per-platform under different subpaths (e.g., /win, /mac, /linux).
+- Windows/macOS code signing improves trust and enables smoother updates; macOS often requires notarization.
+- Use HTTPS for Generic hosting; avoid auth for public distribution. If auth is required, prefer short‑lived tokens or signed URLs.
+- macOS auto-update uses the generated ZIP, not the DMG.
+- You can publish per-platform under different subpaths (e.g., /win, /mac, /linux).
 
 ## Quick checklist
 
--   [ ] Add a publish provider to electron-builder.json5
--   [ ] Decide prompt strategy (auto vs ask)
--   [ ] Add updater code to electron/main.ts
--   [ ] Build and upload or enable CI publish
--   [ ] Verify latest\*.yml is reachable from your configured URL
+- [ ] Add a publish provider to electron-builder.json5
+- [ ] Decide prompt strategy (auto vs ask)
+- [ ] Add updater code to electron/main.ts
+- [ ] Build and upload or enable CI publish
+- [ ] Verify latest\*.yml is reachable from your configured URL

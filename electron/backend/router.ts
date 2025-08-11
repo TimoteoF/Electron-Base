@@ -1,6 +1,8 @@
 import { initTRPC } from '@trpc/server';
-import type { CallerContext } from '@app/backend/ctx';
+
 import { osRouter } from '@app/backend/routers/os';
+
+import type { CallerContext } from '@app/backend/ctx';
 
 const t = initTRPC.context<CallerContext>().create();
 
