@@ -61,7 +61,10 @@ pnpm build   # build renderer and package Windows installer
 ### Packaging & updates
 
     -   `electron-builder.json5` is ready, and `pnpm build` creates a Windows installer.
-    -   Auto‑update is supported with `electron-updater` (see `auto-update.md`).
+    -   Auto‑update is supported with `electron-updater`.
+
+> [!TIP]
+> Read more about how to [ship updates for your app](auto-update.md).
 
 > [!NOTE]
 > Where things live.
@@ -136,6 +139,9 @@ export const trpc = createTRPCProxyClient<AppRouter>({ links: [ipcLink()] });
 -   Secure: no HTTP server, no Node in renderer
 -   Minimal surface: package-provided bridge via `exposeElectronTRPC` + `ipcLink`
 -   Scales by domain: add functions → expose via routers → mount → use
+
+> [!NOTE]
+> Read more about how to work with [multiple windows](multi-window.md).
 
 ---
 
